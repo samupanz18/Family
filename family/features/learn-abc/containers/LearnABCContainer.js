@@ -3,6 +3,12 @@
 import React from 'react';
 import Promise from 'bluebird';
 import ShowAlphabetTask from '../ShowAlphabetTask';
+import store from '../../../store';
+import {
+    start,
+    showLetter,
+    clearStarted,
+} from '../actions';
 
 export default LearnABC => (
     class Container extends React.Component {
@@ -13,10 +19,11 @@ export default LearnABC => (
 
             this.onStart = ::this.onStart;
 
-            this.state = {
-                started: false,
-                letter: '',
-            };
+            this.unsubscribe = store.subscribe(() => {
+                this.setState(store.getState());
+            });
+
+            this.state = store.getState();
         }
 
         render() {
@@ -26,7 +33,7 @@ export default LearnABC => (
             } = this.state;
 
             return (
-                <LearnABC 
+                <LearnABC
                     started={started}
                     letter={letter}
                     onStart={this.onStart}
@@ -36,6 +43,7 @@ export default LearnABC => (
 
         componentWillUnmount() {
             this.showAlphabetTask.interrupt();
+            this.unsubscribe();
         }
 
         onStart() {
@@ -43,32 +51,28 @@ export default LearnABC => (
         }
 
         start() {
-            Promise.fromCallback(cb => {
-                this.setState({
-                    started: true,
-                }, cb);
-            })
-                .then(() => {
-                    this.showAlphabetTask.run();
-                });
+            const action = start();
+
+            store.dispatch(action);
+            this.showAlphabetTask.run();
+        }
+
+        showLetter(letter) {
+            const action = showLetter(letter);
+
+            store.dispatch(action);
+        }
+
+        clearStarted() {
+            const action = clearStarted();
+
+            store.dispatch(action);
         }
 
         getShowAlphabetTaskSupport() {
-            const showLetter = letter => Promise.fromCallback(cb => {
-                this.setState({
-                    letter,
-                }, cb);
-            });
-
-            const clearStarted = () => Promise.fromCallback(cb => {
-                this.setState({
-                    started: false,
-                }, cb);
-            });
-
             return {
-                showLetter,
-                clearStarted,
+                showLetter: ::this.showLetter,
+                clearStarted: ::this.clearStarted,
             };
         }
     }

@@ -28,10 +28,8 @@ export default class ShowAlphabetTask extends CountdownTask {
 
     onStart(done) {
         const letter = this.getLetter();
-        this.support.showLetter(letter)
-            .then(() => {
-                done();
-            });
+        this.support.showLetter(letter);
+        done();
     }
 
     onWork(done) {
@@ -40,11 +38,9 @@ export default class ShowAlphabetTask extends CountdownTask {
                 if (this.currentNumber > 0) {
                     const letter = this.getLetter();
                     
-                    return this.support.showLetter(letter);
+                    this.support.showLetter(letter);
+                    done();
                 }
-            })
-            .then(() => {
-                done();
             });
     }
 
