@@ -3,14 +3,14 @@ export const SHOW_LETTER = 'SHOW_LETTER';
 export const CLEAR_STARTED = 'CLEAR_STARTED';
 
 export const start = () => ({
-    type: START
+    type: START,
 });
 
 export const showLetter = letter => ({
     type: SHOW_LETTER,
-    letter
+    letter,
 });
 
 export const clearStarted = () => ({
-    type: CLEAR_STARTED
+    type: CLEAR_STARTED,
 });

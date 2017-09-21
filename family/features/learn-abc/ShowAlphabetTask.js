@@ -39,8 +39,9 @@ export default class ShowAlphabetTask extends CountdownTask {
                     const letter = this.getLetter();
                     
                     this.support.showLetter(letter);
-                    done();
                 }
+
+                done();
             });
     }
 
